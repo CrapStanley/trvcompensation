@@ -31,10 +31,10 @@ trigger:
     entity_id: !input room
 condition:
   - condition: template
-    value_template: '{{(((states(var_room)|float|round(1,"half")) - (state_attr(var_trv, ''local_temperature'')|float))|round(1,"half") + (state_attr(var_trv,  ''local_temperature_calibration'')|float)) != (state_attr(var_trv, ''local_temperature_calibration'')|float)}}'
+    value_template: '{{ room_trv_newcalib != room_trv_calib }}'
 action:
   - service: mqtt.publish
     data:
       topic: zigbee2mqtt/{{trv_name}}/set/local_temperature_calibration
-      payload: '{{(((states(var_room)|float|round(1,"half")) - (state_attr(var_trv, ''local_temperature'')|float))|round(1,"half") + (state_attr(var_trv,  ''local_temperature_calibration'')|float))}}'
+      payload: '{{room_trv_newcalib}}'
 mode: single
