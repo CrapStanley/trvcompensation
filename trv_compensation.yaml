@@ -1,0 +1,40 @@
+blueprint:
+  name: TRV Compensation
+  description: Use room temperature to calibrate TRV
+  domain: automation
+  input:
+    trv:
+      name: TRV
+      description: Select TRV
+      selector:
+        entity:
+          domain: climate
+    room:
+      name: Room Temperature Sensor
+      description: Select room Temperature Sensor
+      selector:
+        entity:
+          domain: sensor
+          device_class: temperature
+  
+variables:
+  var_trv: !input trv
+  var_room: !input room
+  trv_name: '{{state_attr(var_trv, ''friendly_name'')}}'
+  room_temp: '{{(states(var_room)|float)|round(1, "half")}}'
+  room_trv_temp: '{{ (state_attr(var_trv, ''local_temperature'')|float)|round(1, "half") }}'
+  room_trv_calib: '{{ state_attr(var_trv, ''local_temperature_calibration'')|float }}'
+  room_trv_newcalib: '{{ (room_temp - room_trv_temp + room_trv_calib)|float }}'
+
+trigger:
+  - platform: state
+    entity_id: !input room
+condition:
+  - condition: template
+    value_template: '{{(((states(var_room)|float|round(1,"half")) - (state_attr(var_trv, ''local_temperature'')|float))|round(1,"half") + (state_attr(var_trv,  ''local_temperature_calibration'')|float)) != (state_attr(var_trv, ''local_temperature_calibration'')|float)}}'
+action:
+  - service: mqtt.publish
+    data:
+      topic: zigbee2mqtt/trv_name/set/local_temperature_calibration
+      payload: '{{(((states(var_room)|float|round(1,"half")) - (state_attr(var_trv, ''local_temperature'')|float))|round(1,"half") + (state_attr(var_trv,  ''local_temperature_calibration'')|float))}}'
+mode: single
