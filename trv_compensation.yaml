@@ -35,6 +35,6 @@ condition:
 action:
   - service: mqtt.publish
     data:
-      topic: zigbee2mqtt/trv_name/set/local_temperature_calibration
+      topic: zigbee2mqtt/{{trv_name}}/set/local_temperature_calibration
       payload: '{{(((states(var_room)|float|round(1,"half")) - (state_attr(var_trv, ''local_temperature'')|float))|round(1,"half") + (state_attr(var_trv,  ''local_temperature_calibration'')|float))}}'
 mode: single
