@@ -32,6 +32,10 @@ trigger:
 condition:
   - condition: template
     value_template: '{{ room_trv_newcalib != room_trv_calib }}'
+  - condition: template
+    value_template: '{{ room_trv_newcalib >= -15 }}'
+  - condition: template
+    value_template: '{{ room_trv_newcalib <= 15 }}'
 action:
   - service: mqtt.publish
     data:
