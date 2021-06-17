@@ -22,10 +22,10 @@ variables:
   var_room: !input room
   trv_name: '{{state_attr(var_trv, ''friendly_name'')}}'
   room_temp: '{{(states(var_room)|float)|round(1, "half")}}'
-  room_trv_temp: '{{ (state_attr(var_trv, ''local_temperature'')|float)|round(1, "half") }}'
+  room_trv_temp: '{{ state_attr(var_trv, ''local_temperature'')|float }}'
   room_trv_calib: '{{ state_attr(var_trv, ''local_temperature_calibration'')|float }}'
   room_trv_nocalib: '{{ (room_trv_temp - room_trv_nocalib)|float }}'
-  room_trv_newcalib: '{{ (room_temp - room_trv_nocalib)|float }}'
+  room_trv_newcalib: '{{ ((room_temp - room_trv_nocalib)|float)|round(1, "half") }}'
 
 trigger:
   - platform: state
