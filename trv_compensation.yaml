@@ -28,8 +28,8 @@ variables:
   room_trv_newcalib: '{{ ((room_temp - room_trv_nocalib)|float)|round(1, "half") }}'
 
 trigger:
-  - platform: state
-    entity_id: !input room
+  - platform: time_pattern
+    minutes: "/2"
 condition:
   - condition: template
     value_template: '{{ room_trv_newcalib != room_trv_calib }}'
