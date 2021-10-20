@@ -23,7 +23,7 @@ variables:
   trv_name: '{{ state_attr(var_trv, ''friendly_name'') }}'
   room_temp: '{{ states(var_room)|float }}'
   room_trv_temp: '{{ state_attr(var_trv, ''external_measured_room_sensor'')|float }}'
-  room_trv_new_temp: '{{ ((states('sensor.lounge_temperature')|float)*100)|round(0) }}'
+  room_trv_new_temp: '{{ ((states(var_room)|float)*100)|round(0) }}'
   
 trigger:
   - platform: time_pattern
