@@ -1,6 +1,6 @@
 blueprint:
   name: Hive TRV Compensation
-  description: Use external sensor for TRV current temperature
+  description: Use room temperature for TRV current temperature
   domain: automation
   input:
     trv:
@@ -11,7 +11,7 @@ blueprint:
           domain: climate
     room:
       name: Room Temperature Sensor
-      description: Select room Temperature Sensor
+      description: Select Room Temperature Sensor
       selector:
         entity:
           domain: sensor
@@ -23,17 +23,17 @@ variables:
   trv_name: '{{ state_attr(var_trv, ''friendly_name'') }}'
   room_temp: '{{ states(var_room)|float }}'
   room_trv_temp: '{{ state_attr(var_trv, ''external_measured_room_sensor'')|float }}'
-  room_trv_new_temp: '{{ ((states(var_room)|float)*100)|round(0) }}'
-  
+  room_trv_newtemp: '{{ ((room_temp)*100)|round(0) }}'
+
 trigger:
   - platform: time_pattern
-    minutes: "/31"
+    minutes: "/30"
 condition:
   - condition: template
-    value_template: '{{ room_trv_new_temp != room_trv_temp }}'
+    value_template: '{{ room_trv_newtemp != room_trv_temp }}'
 action:
   - service: mqtt.publish
     data:
       topic: zigbee2mqtt/{{trv_name}}/set/external_measured_room_sensor
-      payload: '{{room_trv_new_temp}}'
+      payload: '{{room_trv_newtemp}}'
 mode: single
