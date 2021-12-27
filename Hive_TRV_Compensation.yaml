@@ -21,8 +21,8 @@ variables:
   var_trv: !input trv
   var_room: !input room
   trv_name: '{{ state_attr(var_trv, ''friendly_name'') }}'
-  room_temp: '{{ states(var_room)|float }}'
-  room_trv_temp: '{{ state_attr(var_trv, ''external_measured_room_sensor'')|float }}'
+  room_temp: '{{ states(var_room)|float(0) }}'
+  room_trv_temp: '{{ state_attr(var_trv, ''external_measured_room_sensor'')|float(0) }}'
   room_trv_newtemp: '{{ ((room_temp)*100)|round(0) }}'
 
 trigger:
