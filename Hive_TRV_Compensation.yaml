@@ -27,7 +27,7 @@ variables:
 
 trigger:
   - platform: time_pattern
-    minutes: "/15"
+    minutes: "/30"
 condition:
   - condition: template
     value_template: '{{ room_trv_newtemp != room_trv_temp }}'
