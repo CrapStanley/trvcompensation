@@ -24,6 +24,7 @@ variables:
   room_temp: '{{ states(var_room)|float(0) }}'
   room_trv_temp: '{{ state_attr(var_trv, ''external_measured_room_sensor'')|float(0) }}'
   room_trv_newtemp: '{{ ((room_temp)*100)|round(0) }}'
+  mqtt_payload: 
 
 trigger:
   - platform: time_pattern
@@ -38,6 +39,6 @@ condition:
 action:
   - service: mqtt.publish
     data:
-      topic: zigbee2mqtt/{{trv_name}}/set/external_measured_room_sensor
-      payload: '{{room_trv_newtemp}}'
+      topic: zigbee2mqtt/{{trv_name}}/set
+      payload: {"external_measured_room_sensor": {{room_trv_newtemp}}}
 mode: single
