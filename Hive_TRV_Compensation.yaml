@@ -27,10 +27,14 @@ variables:
 
 trigger:
   - platform: time_pattern
-    minutes: "/15"
+    minutes: "/30"
 condition:
   - condition: template
     value_template: '{{ room_trv_newtemp != room_trv_temp }}'
+  - condition: not
+    conditions:
+      - condition: template
+        value_template: '{{ -10 < (room_trv_newtemp - room_trv_temp) < 10 }}'
 action:
   - service: mqtt.publish
     data:
