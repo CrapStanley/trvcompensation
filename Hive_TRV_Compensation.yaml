@@ -40,5 +40,5 @@ action:
   - service: mqtt.publish
     data:
       topic: zigbee2mqtt/{{trv_name}}/set
-      payload: "external_measured_room_sensor": {{room_trv_newtemp}}
+      payload: external_measured_room_sensor: {{room_trv_newtemp}}
 mode: single
