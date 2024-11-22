@@ -38,6 +38,8 @@ blueprint:
 variables:
   device: !input ally_device
   temp_sensor_id: !input temp_sensor_id
+  temp_sensor_1dp: >
+    {{ states(temp_sensor_id) | float(0) | round(1) }}
   radiator_covered_state: >
     {{ states( device_entities(device) | select('match', '.*radiator_covered$')
     | first) }}
@@ -68,9 +70,9 @@ condition:
   - condition: and
     conditions:
       - condition: template
-        value_template: "{{ states(temp_sensor_id) is not none }}"
+        value_template: "{{ states(temp_sensor_1dp) is not none }}"
       - condition: template
-        value_template: "{{ states(temp_sensor_id) | float(0) > 0 }}"
+        value_template: "{{ states(temp_sensor_1dp) | float(0) > 0 }}"
       - condition: or
         conditions:
           - condition: and
@@ -80,7 +82,7 @@ condition:
                   {% set number_entity = device_entities(device) |
                   select('search', 'number.*_external_measured_room_sensor') |
                   list | first %} {{ ((states(number_entity) | float(0) -
-                  states(temp_sensor_id) | float * 100) | round(0)) | abs >=10
+                  states(temp_sensor_1dp) | float * 100) | round(0)) | abs >=10
                   }}
               - condition: template
                 value_template: >-
@@ -96,7 +98,7 @@ action:
       topic: >-
         zigbee2mqtt/{{ device_attr(device, 'name')
         }}/set/external_measured_room_sensor
-      payload: '{{ (states(temp_sensor_id) | float * 100) | round(0) }}'
+      payload: '{{ (states(temp_sensor_1dp) | float * 100) | round(0) }}'
   - service: timer.start
     target:
       entity_id: !input max_update_timer_id
